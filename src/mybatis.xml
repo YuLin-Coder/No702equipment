@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<!-- mybatis.xml作用：配置连接数据库的所有需要的环境 ， 必须连接到所有要使用的映射文件。-->  
+<configuration>
+    <!-- 配置别名：在MyBatis中为一个类取别名，配置别名是为了在对象映射文件中接收参数类型和返回参数类型时使用--> 
+	<typeAliases>
+		<typeAlias alias="admin" type="com.entity.Admin" /><!-- 管理员表别名为admin 映射类是 com.entity.Admin -->
+		<typeAlias alias="labx" type="com.entity.Labx" /><!-- 实验室表别名为labx 映射类是 com.entity.Labx -->
+		<typeAlias alias="cate" type="com.entity.Cate" /><!-- 设备类型表别名为cate 映射类是 com.entity.Cate -->
+		<typeAlias alias="equip" type="com.entity.Equip" /><!-- 设备表别名为equip 映射类是 com.entity.Equip -->
+		<typeAlias alias="repair" type="com.entity.Repair" /><!-- 设备维护表别名为repair 映射类是 com.entity.Repair -->
+		<typeAlias alias="scarp" type="com.entity.Scarp" /><!-- 设备报废表别名为scarp 映射类是 com.entity.Scarp -->
+	</typeAliases>
+
+	<!-- mappers 标签是用来配置需要加载的 SQL 映射配置文件路径 -->
+	<mappers>
+		<mapper resource="mapper/admin.xml" /> <!-- 管理员映射文件 -->
+		<mapper resource="mapper/labx.xml" /> <!-- 实验室映射文件 -->
+		<mapper resource="mapper/cate.xml" /> <!-- 设备类型映射文件 -->
+		<mapper resource="mapper/equip.xml" /> <!-- 设备映射文件 -->
+		<mapper resource="mapper/repair.xml" /> <!-- 设备维护映射文件 -->
+		<mapper resource="mapper/scarp.xml" /> <!-- 设备报废映射文件 -->
+	</mappers>
+</configuration>
+
+
+

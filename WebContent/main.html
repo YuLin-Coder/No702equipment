@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <title>欢迎使用实验室管理系统</title>
+    <link rel="stylesheet" href="./asset/css/components.css" />
+    <link rel="stylesheet" href="./asset/css/bootstrap.css" />
+    <link rel="stylesheet" href="./asset/css/plugins.css" />
+    <link rel="stylesheet" href="./asset/css/main.css" />
+    <link rel="stylesheet" href="./asset/css/themes.css" />
+    <script type="text/javascript" src="./asset/js/jquery.min.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <div id="system">
+            <header>
+                <div class="left">
+                    <a href="javascript:;">
+                        实验室管理系统
+                    </a>
+                </div>
+                <div class="right">
+                    <a href="javascript:;">
+                        欢迎您&nbsp;<span id="adminname"></span>&nbsp;您的角色&nbsp;<span id="role"></span>
+                    </a>
+                    <a href="javascript:;" id="editpwd" title="修改密码">修改密码</a>
+                    <a href="javascript:;" id="exit" title="退出">
+                        <i class="fa fa-power-off"></i>
+                    </a>
+                </div>
+            </header>
+            <section class="body">
+                <div class="left">
+                    <div class="navbar">
+                        <dl>
+                            <dt><i class="fa fa-fw fa-user-md"></i> <span>管理员信息</span></dt>
+                            <dd>
+                                <div class='li'>
+                                    <a href="listadmin.html" target="rightiframe">
+                                        <i class="fa fa-fw fa-angle-right"></i><span>管理员列表</span>
+                                    </a>
+                                </div>
+                            </dd>
+                        </dl>
+                        <dl>
+                            <dt><i class="fa fa-fw fa-reorder"></i> <span>实验室信息</span></dt>
+                            <dd>
+                                <div class='li'>
+                                    <a href="listlabx.html" target="rightiframe">
+                                        <i class="fa fa-fw fa-angle-right"></i><span>实验室列表</span>
+                                    </a>
+                                </div>
+                            </dd>
+                        </dl>
+                        <dl>
+                            <dt><i class="fa fa-fw fa-reorder"></i> <span>设备类型信息</span></dt>
+                            <dd>
+                                <div class='li'>
+                                    <a href="listcate.html" target="rightiframe">
+                                        <i class="fa fa-fw fa-angle-right"></i><span>设备类型列表</span>
+                                    </a>
+                                </div>
+                            </dd>
+                        </dl>
+                        <dl>
+                            <dt><i class="fa fa-fw fa-reorder"></i> <span>设备信息</span></dt>
+                            <dd>
+                                <div class='li'>
+                                    <a href="listequip.html" target="rightiframe">
+                                        <i class="fa fa-fw fa-angle-right"></i><span>设备列表</span>
+                                    </a>
+                                </div>
+                            </dd>
+                        </dl>
+                        <dl>
+                            <dt><i class="fa fa-fw fa-reorder"></i> <span>设备维护信息</span></dt>
+                            <dd>
+                                <div class='li'>
+                                    <a href="listrepair.html" target="rightiframe">
+                                        <i class="fa fa-fw fa-angle-right"></i><span>设备维护列表</span>
+                                    </a>
+                                </div>
+                            </dd>
+                        </dl>
+                        <dl>
+                            <dt><i class="fa fa-fw fa-reorder"></i> <span>设备报废信息</span></dt>
+                            <dd>
+                                <div class='li'>
+                                    <a href="listscarp.html" target="rightiframe">
+                                        <i class="fa fa-fw fa-angle-right"></i><span>设备报废列表</span>
+                                    </a>
+                                </div>
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+                <div class="right">
+                    <iframe src="welcome.html" frameborder="0" id="rightiframe" name="rightiframe"></iframe>
+                </div>
+            </section>
+            <div class="rightmask"></div>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="./asset/layui/layui.js"></script>
+    <script type="text/javascript" src="./asset/js/tool.js"></script>
+    <script type="text/javascript">
+
+        $('#editpwd').click(function () {
+            layer_show('修改密码', 'editpwd.html', 600, 400);
+        });
+
+        $('#exit').click(function () {
+            if (window.confirm('确定要退出吗？')) {
+                sessionStorage.clear(); // 删除sesstion数据
+                window.location.href = 'index.html';
+            }
+        });
+
+        $(window).load(function () {
+            if (sessionStorage.getItem('adminname') == null) {
+                window.location.href = 'index.html';
+            }
+            $('#adminname').text(sessionStorage.getItem('adminname'));
+            $('#role').text(sessionStorage.getItem('role'));
+        });
+
+        $('.navbar dl dt').click(function () {
+            if (!$(this).siblings('dd').hasClass('active')) {
+                $('.navbar dl dd').removeClass('active');
+                $(this).siblings('dd').removeClass('active');
+                $(this).siblings('dd').addClass('active');
+            } else {
+                $('.navbar dl dd').removeClass('active');
+                $(this).siblings('dd').removeClass('active');
+            }
+
+            if (!$(this).hasClass('activeTop')) {
+                $('.navbar dl dt').removeClass('activeTop');
+                $(this).removeClass('activeTop');
+                $(this).addClass('activeTop');
+            } else {
+                $('.navbar dl dt').removeClass('activeTop');
+                $(this).removeClass('activeTop');
+            }
+        });
+
+        $('.navbar .li a').click(function () {
+            $('.navbar .li a').removeClass('activelinks');
+            $(this).addClass('activelinks');
+        });
+
+    </script>
+
+</body>
+
+</html>

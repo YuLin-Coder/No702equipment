@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 配置关于实验室表的 MyBatis映射文件 -->
+<!-- namespace：必须与对应的接口全类名一致 id:必须与对应接口的某个对应的方法名一致 -->
+<mapper namespace="com.dao.LabxDAO">
+	<resultMap type="labx" id="labxMap">
+		<id property="labxid" column="labxid" />
+		<result property="labxname" column="labxname" />
+		<result property="manager" column="manager" />
+		<result property="contact" column="contact" />
+		<result property="address" column="address" />
+		<result property="addtime" column="addtime" />
+		<result property="memo" column="memo" />
+	</resultMap>
+
+	<!-- 实验室表 插入SQL语句  LabxDAO通过ID(insertLabx)调用此配置 -->
+	<insert id="insertLabx" parameterType="labx">  
+		insert into labx(labxid  , labxname  , manager  , contact  , address  , addtime  , memo ) values(#{labxid}  , #{labxname}   , #{manager}   , #{contact}   , #{address}   , #{addtime}   , #{memo} )
+	</insert>
+
+	<!-- 实验室表 更新SQL语句  LabxDAO通过ID(updateLabx)调用此配置 -->
+	<update id="updateLabx" parameterType="labx">
+		update labx set  labxname=#{labxname}  , manager=#{manager}  , contact=#{contact}  , address=#{address}  , addtime=#{addtime}  , memo=#{memo}  where labxid=#{labxid}
+	</update>
+
+	<!-- 实验室表 按主键删除SQL语句  LabxDAO通过ID(deleteLabx)调用此配置 -->
+	<delete id="deleteLabx" parameterType="String">
+		delete from labx where labxid = #{labxid}
+	</delete>
+
+	<!-- 实验室表 查询全部实验室信息SQL语句  LabxDAO通过ID(getAllLabx)调用此配置  -->
+	<select id="getAllLabx" resultMap="labxMap">
+		select a.*  from labx a  where 1=1  order by labxid desc
+	</select>
+
+	<!-- 实验室表 按主键(labxid)查询SQL语句 LabxDAO通过ID(getLabxById)调用此配置  -->
+	<select id="getLabxById" parameterType="String" resultMap="labxMap">
+		select a.*  from labx a  where 1=1 and labxid=#{labxid} order by labxid desc
+	</select>
+
+	<!-- 实验室表 按条件精确查询SQL语句 LabxDAO通过ID(getLabxByCond)调用此配置  -->
+	<select id="getLabxByCond" parameterType="labx" resultMap="labxMap">
+		select a.*  from labx a  where 1=1 
+		<if test="labxname != null and '' != labxname">
+			and a.labxname = #{labxname}  
+		</if>
+		<if test="manager != null and '' != manager">
+			and a.manager = #{manager}  
+		</if>
+		<if test="contact != null and '' != contact">
+			and a.contact = #{contact}  
+		</if>
+		<if test="address != null and '' != address">
+			and a.address = #{address}  
+		</if>
+		<if test="addtime != null and '' != addtime">
+			and a.addtime = #{addtime}  
+		</if>
+		<if test="memo != null and '' != memo">
+			and a.memo = #{memo}  
+		</if>
+	</select>
+
+	<!-- 实验室表 按条件模糊查询SQL语句 LabxDAO通过ID(getLabxByLike)调用此配置  -->
+	<select id="getLabxByLike" parameterType="labx" resultMap="labxMap">
+		select a.*  from labx a  where 1=1 
+		<if test="labxname != null and '' != labxname">
+			and a.labxname like CONCAT('%', CONCAT(#{labxname}, '%'))
+		</if>
+		<if test="manager != null and '' != manager">
+			and a.manager like CONCAT('%', CONCAT(#{manager}, '%'))
+		</if>
+		<if test="contact != null and '' != contact">
+			and a.contact like CONCAT('%', CONCAT(#{contact}, '%'))
+		</if>
+		<if test="address != null and '' != address">
+			and a.address like CONCAT('%', CONCAT(#{address}, '%'))
+		</if>
+		<if test="addtime != null and '' != addtime">
+			and a.addtime like CONCAT('%', CONCAT(#{addtime}, '%'))
+		</if>
+		<if test="memo != null and '' != memo">
+			and a.memo like CONCAT('%', CONCAT(#{memo}, '%'))
+		</if>
+	</select>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

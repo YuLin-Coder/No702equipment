@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="zh">
+
+<head>
+   <meta charset="UTF-8">
+    <title>添加设备报废</title>
+    <link rel="stylesheet" href="./asset/css/components.css" />
+    <link rel="stylesheet" href="./asset/css/bootstrap.css" />
+    <link rel="stylesheet" href="./asset/css/plugins.css" />
+    <link rel="stylesheet" href="./asset/css/main.css" />
+    <link rel="stylesheet" href="./asset/css/themes.css" />
+	<link rel="stylesheet" href="./asset/layui/css/layui.css" />
+</head>
+
+<body>
+    <div id="body">
+        <div id="app">
+            <div class="tabbody">
+                <div class="bodyli active">
+                    <div class="inputbox">
+                        <span class="title">报废单号</span>
+                        <div class="inputright">
+                            <input type="text" id="sno" v-model="sno" class="form-control input-sm" placeholder="请输入报废单号" readonly="readonly">
+                        </div>
+                    </div>
+                    <div class="inputbox">
+                        <span class="title">设备</span>
+                        <div class="inputright">
+                            <select class="form-control" id="equipid">
+                                <option :value="0">---请选择设备---</option>
+                                <option :value="item.equipid" v-for="item in equip">{{ item.equipname }}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="inputbox">
+                        <span class="title">报废原因</span>
+                        <div class="inputright">
+                            <input type="text" id="reason" v-model="reason" class="form-control input-sm" placeholder="请输入报废原因">
+                        </div>
+                    </div>
+                    <div class="inputbox">
+                        <span class="title">报废日期</span>
+                        <div class="inputright">
+                            <input type="text" id="addtime" v-model="addtime" class="form-control input-sm" placeholder="请输入报废日期" @click="getDate3()" readonly="readonly" autocomplete="off">
+                        </div>
+                    </div>
+                    <div class="inputbox">
+                        <span class="title">经手人</span>
+                        <div class="inputright">
+                            <input type="text" id="manager" v-model="manager" class="form-control input-sm" placeholder="请输入经手人">
+                        </div>
+                    </div>
+                    <div class="inputbox">
+                        <span class="title">备注</span>
+                        <div class="inputright">
+                            <input type="text" id="memo" v-model="memo" class="form-control input-sm" placeholder="请输入备注">
+                        </div>
+                    </div>
+            <div class="tbfooter">
+                <button class="btn btn-success" @click.prevent="save()"><i class="fa fa-floppy-o"></i> 提交保存</button>
+                &nbsp;&nbsp;&nbsp;
+                <button class="btn btn-default" @click.prevent="reset()"><i class="fa fa-recycle"></i> 取消重置</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="./asset/js/jquery.min.js"></script>
+	<script type="text/javascript" src="./asset/layui/layui.js"></script>
+    <script type="text/javascript" src="./asset/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="./asset/js/axios.min.js"></script>
+    <script type="text/javascript" src="./asset/js/vue.js"></script>
+	  <script type="text/javascript">
+		const vue = new Vue({ // 实例化Vue对象
+			el: '#app',// 绑定作用域
+			data: { //定义数据
+				sno: '', // 定义报废单号数据
+				equipid: '0', // 定义设备数据
+				reason: '', // 定义报废原因数据
+				addtime: '', // 定义报废日期数据
+				manager: '', // 定义经手人数据
+				memo: '', // 定义备注数据
+				equip: {}, // 用来保存设备对象数据
+			},
+			methods: {
+				save: function () {
+					let _this = this;
+					var data = {
+						sno: _this.sno,
+						equipid: $('#equipid').val(),
+						reason: _this.reason,
+						addtime: _this.addtime,
+						manager: _this.manager,
+						memo: _this.memo,
+					};
+					axios.post('http://127.0.0.1:8080/equipment/scarp/insertScarp.action', data).then(result => {
+						if (result.data.code > 0) {
+							if (window.confirm('保存成功,是否继续添加？')) {
+								_this.reset();
+							} else {
+								var index = parent.layer.getFrameIndex(window.name);
+								parent.location.reload();
+								parent.layer.close(index);
+							}
+						} else {
+							console.log('保存失败,请稍后再试');
+						}
+					});
+				},
+				reset: function () {
+					this.pageLoad();
+				},
+				pageLoad: function () { // 页面加载
+					axios.get('http://127.0.0.1:8080/equipment/scarp/createScarp.action').then(result => {
+						this.sno = result.data.sno;
+					});
+					this.equipid= '0';
+					this.reason= '';
+					this.addtime= '';
+					this.manager= '';
+					this.memo= '';
+				},
+				validate: function () { // 验证输入非空
+				},
+				getDate3: function () { // 日历点击事件
+					var _this = this;
+					var laydate = layui.laydate;
+					laydate.render({
+						elem: '#addtime',
+						show: true,
+						done: function (value) {
+							_this.addtime = value;
+						}
+					})
+				},
+			},
+			created() { // 生命周期相关的函数
+				let _this = this;
+				axios.get('http://127.0.0.1:8080/equipment/equip/getAllEquip.action').then(result => {
+					_this.equip = result.data;
+				});
+				_this.pageLoad();
+			},
+		})
+	</script>
+
+</body>
+
+</html>
+
+

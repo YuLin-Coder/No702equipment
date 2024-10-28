@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="zh">
+
+<head>
+	<meta charset="UTF-8">
+	<title>添加设备</title>
+	<link rel="stylesheet" href="./asset/css/components.css" />
+	<link rel="stylesheet" href="./asset/css/bootstrap.css" />
+	<link rel="stylesheet" href="./asset/css/plugins.css" />
+	<link rel="stylesheet" href="./asset/css/main.css" />
+	<link rel="stylesheet" href="./asset/css/themes.css" />
+	<link rel="stylesheet" href="./asset/layui/css/layui.css" />
+</head>
+
+<body>
+	<div id="body">
+		<div id="app">
+			<div class="tabbody">
+				<div class="bodyli active">
+					<div class="inputbox">
+						<span class="title">设备号</span>
+						<div class="inputright">
+							<input type="text" id="eno" v-model="eno" class="form-control input-sm" placeholder="请输入设备号"
+								readonly="readonly">
+						</div>
+					</div>
+					<div class="inputbox">
+						<span class="title">设备名称</span>
+						<div class="inputright">
+							<input type="text" id="equipname" v-model="equipname" class="form-control input-sm"
+								placeholder="请输入设备名称">
+						</div>
+					</div>
+					<div class="inputbox">
+						<span class="title">设备类型</span>
+						<div class="inputright">
+							<select class="form-control" id="cateid">
+								<option :value="0">---请选择设备类型---</option>
+								<option :value="item.cateid" v-for="item in cate">{{ item.catename }}</option>
+							</select>
+						</div>
+					</div>
+					<div class="inputbox">
+						<span class="title">所在实验室</span>
+						<div class="inputright">
+							<select class="form-control" id="labxid">
+								<option :value="0">---请选择所在实验室---</option>
+								<option :value="item.labxid" v-for="item in labx">{{ item.labxname }}</option>
+							</select>
+						</div>
+					</div>
+					<div class="inputbox">
+						<span class="title">设备作用</span>
+						<div class="inputright">
+							<input type="text" id="useinfo" v-model="useinfo" class="form-control input-sm"
+								placeholder="请输入设备作用">
+						</div>
+					</div>
+					<div class="inputbox">
+						<span class="title">生产厂商</span>
+						<div class="inputright">
+							<input type="text" id="productor" v-model="productor" class="form-control input-sm"
+								placeholder="请输入生产厂商">
+						</div>
+					</div>
+					<div class="inputbox">
+						<span class="title">采购金额</span>
+						<div class="inputright">
+							<input type="text" id="price" v-model="price" class="form-control input-sm"
+								placeholder="请输入采购金额">
+						</div>
+					</div>
+					<div class="inputbox">
+						<span class="title">采购日期</span>
+						<div class="inputright">
+							<input type="text" id="buydate" v-model="buydate" class="form-control input-sm"
+								placeholder="请输入采购日期" @click="getDate7()" readonly="readonly" autocomplete="off">
+						</div>
+					</div>
+					<div class="inputbox">
+						<span class="title">负责人</span>
+						<div class="inputright">
+							<input type="text" id="manager" v-model="manager" class="form-control input-sm"
+								placeholder="请输入负责人">
+						</div>
+					</div>
+					<div class="inputbox">
+						<span class="title">备注</span>
+						<div class="inputright">
+							<input type="text" id="memo" v-model="memo" class="form-control input-sm"
+								placeholder="请输入备注">
+						</div>
+					</div>
+					<div class="tbfooter">
+						<button class="btn btn-success" @click.prevent="save()"><i class="fa fa-floppy-o"></i>
+							提交保存</button>
+						&nbsp;&nbsp;&nbsp;
+						<button class="btn btn-default" @click.prevent="reset()"><i class="fa fa-recycle"></i>
+							取消重置</button>
+					</div>
+				</div>
+			</div>
+
+			<script type="text/javascript" src="./asset/js/jquery.min.js"></script>
+			<script type="text/javascript" src="./asset/layui/layui.js"></script>
+			<script type="text/javascript" src="./asset/js/bootstrap.min.js"></script>
+			<script type="text/javascript" src="./asset/js/axios.min.js"></script>
+			<script type="text/javascript" src="./asset/js/vue.js"></script>
+			<script type="text/javascript">
+				const vue = new Vue({ // 实例化Vue对象
+					el: '#app',// 绑定作用域
+					data: { //定义数据
+						eno: '', // 定义设备号数据
+						equipname: '', // 定义设备名称数据
+						cateid: '0', // 定义设备类型数据
+						labxid: '0', // 定义所在实验室数据
+						useinfo: '', // 定义设备作用数据
+						productor: '', // 定义生产厂商数据
+						price: '', // 定义采购金额数据
+						buydate: '', // 定义采购日期数据
+						manager: '', // 定义负责人数据
+						memo: '', // 定义备注数据
+						cate: {}, // 用来保存设备类型对象数据
+						labx: {}, // 用来保存所在实验室对象数据
+					},
+					methods: {
+						save: function () {
+							let _this = this;
+							var data = {
+								eno: _this.eno,
+								equipname: _this.equipname,
+								cateid: $('#cateid').val(),
+								labxid: $('#labxid').val(),
+								useinfo: _this.useinfo,
+								productor: _this.productor,
+								price: _this.price,
+								buydate: _this.buydate,
+								manager: _this.manager,
+								memo: _this.memo,
+							};
+							axios.post('http://127.0.0.1:8080/equipment/equip/insertEquip.action', data).then(result => {
+								if (result.data.code > 0) {
+									if (window.confirm('保存成功,是否继续添加？')) {
+										_this.reset();
+									} else {
+										var index = parent.layer.getFrameIndex(window.name);
+										parent.location.reload();
+										parent.layer.close(index);
+									}
+								} else {
+									console.log('保存失败,请稍后再试');
+								}
+							});
+						},
+						reset: function () {
+							this.pageLoad();
+						},
+						pageLoad: function () { // 页面加载
+							axios.get('http://127.0.0.1:8080/equipment/equip/createEquip.action').then(result => {
+								this.eno = result.data.eno;
+							});
+							this.equipname = '';
+							this.cateid = '0';
+							this.labxid = '0';
+							this.useinfo = '';
+							this.productor = '';
+							this.price = '';
+							this.buydate = '';
+							this.manager = '';
+							this.memo = '';
+						},
+						validate: function () { // 验证输入非空
+						},
+						getDate7: function () { // 日历点击事件
+							var _this = this;
+							var laydate = layui.laydate;
+							laydate.render({
+								elem: '#buydate',
+								show: true,
+								done: function (value) {
+									_this.buydate = value;
+								}
+							})
+						},
+					},
+					created() { // 生命周期相关的函数
+						let _this = this;
+						axios.get('http://127.0.0.1:8080/equipment/cate/getAllCate.action').then(result => {
+							_this.cate = result.data;
+						});
+						axios.get('http://127.0.0.1:8080/equipment/labx/getAllLabx.action').then(result => {
+							_this.labx = result.data;
+						});
+						_this.pageLoad();
+					},
+				})
+			</script>
+
+</body>
+
+</html>

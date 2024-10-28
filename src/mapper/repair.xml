@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 配置关于设备维护表的 MyBatis映射文件 -->
+<!-- namespace：必须与对应的接口全类名一致 id:必须与对应接口的某个对应的方法名一致 -->
+<mapper namespace="com.dao.RepairDAO">
+	<resultMap type="repair" id="repairMap">
+		<id property="repairid" column="repairid" />
+		<result property="rno" column="rno" />
+		<result property="equipid" column="equipid" />
+		<result property="reason" column="reason" />
+		<result property="price" column="price" />
+		<result property="addtime" column="addtime" />
+		<result property="manager" column="manager" />
+		<result property="memo" column="memo" />
+		<result property="equipname" column="equipname" />
+	</resultMap>
+
+	<!-- 设备维护表 插入SQL语句  RepairDAO通过ID(insertRepair)调用此配置 -->
+	<insert id="insertRepair" parameterType="repair">  
+		insert into repair(repairid  , rno  , equipid  , reason  , price  , addtime  , manager  , memo ) values(#{repairid}  , #{rno}   , #{equipid}   , #{reason}   , #{price}   , #{addtime}   , #{manager}   , #{memo} )
+	</insert>
+
+	<!-- 设备维护表 更新SQL语句  RepairDAO通过ID(updateRepair)调用此配置 -->
+	<update id="updateRepair" parameterType="repair">
+		update repair set  rno=#{rno}  , equipid=#{equipid}  , reason=#{reason}  , price=#{price}  , addtime=#{addtime}  , manager=#{manager}  , memo=#{memo}  where repairid=#{repairid}
+	</update>
+
+	<!-- 设备维护表 按主键删除SQL语句  RepairDAO通过ID(deleteRepair)调用此配置 -->
+	<delete id="deleteRepair" parameterType="String">
+		delete from repair where repairid = #{repairid}
+	</delete>
+
+	<!-- 设备维护表 查询全部设备维护信息SQL语句  RepairDAO通过ID(getAllRepair)调用此配置  -->
+	<select id="getAllRepair" resultMap="repairMap">
+		select a.* , b.equipname  from repair a , equip b  where 1=1 and a.equipid = b.equipid  order by repairid desc
+	</select>
+
+	<!-- 设备维护表 按主键(repairid)查询SQL语句 RepairDAO通过ID(getRepairById)调用此配置  -->
+	<select id="getRepairById" parameterType="String" resultMap="repairMap">
+		select a.* , b.equipname  from repair a , equip b  where 1=1 and a.equipid = b.equipid and repairid=#{repairid} order by repairid desc
+	</select>
+
+	<!-- 设备维护表 按条件精确查询SQL语句 RepairDAO通过ID(getRepairByCond)调用此配置  -->
+	<select id="getRepairByCond" parameterType="repair" resultMap="repairMap">
+		select a.* , b.equipname  from repair a , equip b  where 1=1 and a.equipid = b.equipid 
+		<if test="rno != null and '' != rno">
+			and a.rno = #{rno}  
+		</if>
+		<if test="equipid != null and '' != equipid">
+			and a.equipid = #{equipid}  
+		</if>
+		<if test="reason != null and '' != reason">
+			and a.reason = #{reason}  
+		</if>
+		<if test="price != null and '' != price">
+			and a.price = #{price}  
+		</if>
+		<if test="addtime != null and '' != addtime">
+			and a.addtime = #{addtime}  
+		</if>
+		<if test="manager != null and '' != manager">
+			and a.manager = #{manager}  
+		</if>
+		<if test="memo != null and '' != memo">
+			and a.memo = #{memo}  
+		</if>
+	</select>
+
+	<!-- 设备维护表 按条件模糊查询SQL语句 RepairDAO通过ID(getRepairByLike)调用此配置  -->
+	<select id="getRepairByLike" parameterType="repair" resultMap="repairMap">
+		select a.* , b.equipname  from repair a , equip b  where 1=1 and a.equipid = b.equipid 
+		<if test="rno != null and '' != rno">
+			and a.rno like CONCAT('%', CONCAT(#{rno}, '%'))
+		</if>
+		<if test="equipid != null and '' != equipid">
+			and b.equipname like CONCAT('%', CONCAT(#{equipid}, '%'))
+		</if>
+		<if test="reason != null and '' != reason">
+			and a.reason like CONCAT('%', CONCAT(#{reason}, '%'))
+		</if>
+		<if test="price != null and '' != price">
+			and a.price like CONCAT('%', CONCAT(#{price}, '%'))
+		</if>
+		<if test="addtime != null and '' != addtime">
+			and a.addtime like CONCAT('%', CONCAT(#{addtime}, '%'))
+		</if>
+		<if test="manager != null and '' != manager">
+			and a.manager like CONCAT('%', CONCAT(#{manager}, '%'))
+		</if>
+		<if test="memo != null and '' != memo">
+			and a.memo like CONCAT('%', CONCAT(#{memo}, '%'))
+		</if>
+	</select>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

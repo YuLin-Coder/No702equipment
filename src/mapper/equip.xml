@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 配置关于设备表的 MyBatis映射文件 -->
+<!-- namespace：必须与对应的接口全类名一致 id:必须与对应接口的某个对应的方法名一致 -->
+<mapper namespace="com.dao.EquipDAO">
+	<resultMap type="equip" id="equipMap">
+		<id property="equipid" column="equipid" />
+		<result property="eno" column="eno" />
+		<result property="equipname" column="equipname" />
+		<result property="cateid" column="cateid" />
+		<result property="labxid" column="labxid" />
+		<result property="useinfo" column="useinfo" />
+		<result property="productor" column="productor" />
+		<result property="price" column="price" />
+		<result property="buydate" column="buydate" />
+		<result property="manager" column="manager" />
+		<result property="memo" column="memo" />
+		<result property="catename" column="catename" />
+		<result property="labxname" column="labxname" />
+	</resultMap>
+
+	<!-- 设备表 插入SQL语句  EquipDAO通过ID(insertEquip)调用此配置 -->
+	<insert id="insertEquip" parameterType="equip">  
+		insert into equip(equipid  , eno  , equipname  , cateid  , labxid  , useinfo  , productor  , price  , buydate  , manager  , memo ) values(#{equipid}  , #{eno}   , #{equipname}   , #{cateid}   , #{labxid}   , #{useinfo}   , #{productor}   , #{price}   , #{buydate}   , #{manager}   , #{memo} )
+	</insert>
+
+	<!-- 设备表 更新SQL语句  EquipDAO通过ID(updateEquip)调用此配置 -->
+	<update id="updateEquip" parameterType="equip">
+		update equip set  eno=#{eno}  , equipname=#{equipname}  , cateid=#{cateid}  , labxid=#{labxid}  , useinfo=#{useinfo}  , productor=#{productor}  , price=#{price}  , buydate=#{buydate}  , manager=#{manager}  , memo=#{memo}  where equipid=#{equipid}
+	</update>
+
+	<!-- 设备表 按主键删除SQL语句  EquipDAO通过ID(deleteEquip)调用此配置 -->
+	<delete id="deleteEquip" parameterType="String">
+		delete from equip where equipid = #{equipid}
+	</delete>
+
+	<!-- 设备表 查询全部设备信息SQL语句  EquipDAO通过ID(getAllEquip)调用此配置  -->
+	<select id="getAllEquip" resultMap="equipMap">
+		select a.* , b.catename , c.labxname  from equip a , cate b , labx c  where 1=1 and a.cateid = b.cateid and a.labxid = c.labxid  order by equipid desc
+	</select>
+
+	<!-- 设备表 按主键(equipid)查询SQL语句 EquipDAO通过ID(getEquipById)调用此配置  -->
+	<select id="getEquipById" parameterType="String" resultMap="equipMap">
+		select a.* , b.catename , c.labxname  from equip a , cate b , labx c  where 1=1 and a.cateid = b.cateid and a.labxid = c.labxid and equipid=#{equipid} order by equipid desc
+	</select>
+
+	<!-- 设备表 按条件精确查询SQL语句 EquipDAO通过ID(getEquipByCond)调用此配置  -->
+	<select id="getEquipByCond" parameterType="equip" resultMap="equipMap">
+		select a.* , b.catename , c.labxname  from equip a , cate b , labx c  where 1=1 and a.cateid = b.cateid and a.labxid = c.labxid 
+		<if test="eno != null and '' != eno">
+			and a.eno = #{eno}  
+		</if>
+		<if test="equipname != null and '' != equipname">
+			and a.equipname = #{equipname}  
+		</if>
+		<if test="cateid != null and '' != cateid">
+			and a.cateid = #{cateid}  
+		</if>
+		<if test="labxid != null and '' != labxid">
+			and a.labxid = #{labxid}  
+		</if>
+		<if test="useinfo != null and '' != useinfo">
+			and a.useinfo = #{useinfo}  
+		</if>
+		<if test="productor != null and '' != productor">
+			and a.productor = #{productor}  
+		</if>
+		<if test="price != null and '' != price">
+			and a.price = #{price}  
+		</if>
+		<if test="buydate != null and '' != buydate">
+			and a.buydate = #{buydate}  
+		</if>
+		<if test="manager != null and '' != manager">
+			and a.manager = #{manager}  
+		</if>
+		<if test="memo != null and '' != memo">
+			and a.memo = #{memo}  
+		</if>
+	</select>
+
+	<!-- 设备表 按条件模糊查询SQL语句 EquipDAO通过ID(getEquipByLike)调用此配置  -->
+	<select id="getEquipByLike" parameterType="equip" resultMap="equipMap">
+		select a.* , b.catename , c.labxname  from equip a , cate b , labx c  where 1=1 and a.cateid = b.cateid and a.labxid = c.labxid 
+		<if test="eno != null and '' != eno">
+			and a.eno like CONCAT('%', CONCAT(#{eno}, '%'))
+		</if>
+		<if test="equipname != null and '' != equipname">
+			and a.equipname like CONCAT('%', CONCAT(#{equipname}, '%'))
+		</if>
+		<if test="cateid != null and '' != cateid">
+			and b.catename like CONCAT('%', CONCAT(#{cateid}, '%'))
+		</if>
+		<if test="labxid != null and '' != labxid">
+			and c.labxname like CONCAT('%', CONCAT(#{labxid}, '%'))
+		</if>
+		<if test="useinfo != null and '' != useinfo">
+			and a.useinfo like CONCAT('%', CONCAT(#{useinfo}, '%'))
+		</if>
+		<if test="productor != null and '' != productor">
+			and a.productor like CONCAT('%', CONCAT(#{productor}, '%'))
+		</if>
+		<if test="price != null and '' != price">
+			and a.price like CONCAT('%', CONCAT(#{price}, '%'))
+		</if>
+		<if test="buydate != null and '' != buydate">
+			and a.buydate like CONCAT('%', CONCAT(#{buydate}, '%'))
+		</if>
+		<if test="manager != null and '' != manager">
+			and a.manager like CONCAT('%', CONCAT(#{manager}, '%'))
+		</if>
+		<if test="memo != null and '' != memo">
+			and a.memo like CONCAT('%', CONCAT(#{memo}, '%'))
+		</if>
+	</select>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

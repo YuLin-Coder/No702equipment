@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 配置关于设备报废表的 MyBatis映射文件 -->
+<!-- namespace：必须与对应的接口全类名一致 id:必须与对应接口的某个对应的方法名一致 -->
+<mapper namespace="com.dao.ScarpDAO">
+	<resultMap type="scarp" id="scarpMap">
+		<id property="scarpid" column="scarpid" />
+		<result property="sno" column="sno" />
+		<result property="equipid" column="equipid" />
+		<result property="reason" column="reason" />
+		<result property="addtime" column="addtime" />
+		<result property="manager" column="manager" />
+		<result property="memo" column="memo" />
+		<result property="equipname" column="equipname" />
+	</resultMap>
+
+	<!-- 设备报废表 插入SQL语句  ScarpDAO通过ID(insertScarp)调用此配置 -->
+	<insert id="insertScarp" parameterType="scarp">  
+		insert into scarp(scarpid  , sno  , equipid  , reason  , addtime  , manager  , memo ) values(#{scarpid}  , #{sno}   , #{equipid}   , #{reason}   , #{addtime}   , #{manager}   , #{memo} )
+	</insert>
+
+	<!-- 设备报废表 更新SQL语句  ScarpDAO通过ID(updateScarp)调用此配置 -->
+	<update id="updateScarp" parameterType="scarp">
+		update scarp set  sno=#{sno}  , equipid=#{equipid}  , reason=#{reason}  , addtime=#{addtime}  , manager=#{manager}  , memo=#{memo}  where scarpid=#{scarpid}
+	</update>
+
+	<!-- 设备报废表 按主键删除SQL语句  ScarpDAO通过ID(deleteScarp)调用此配置 -->
+	<delete id="deleteScarp" parameterType="String">
+		delete from scarp where scarpid = #{scarpid}
+	</delete>
+
+	<!-- 设备报废表 查询全部设备报废信息SQL语句  ScarpDAO通过ID(getAllScarp)调用此配置  -->
+	<select id="getAllScarp" resultMap="scarpMap">
+		select a.* , b.equipname  from scarp a , equip b  where 1=1 and a.equipid = b.equipid  order by scarpid desc
+	</select>
+
+	<!-- 设备报废表 按主键(scarpid)查询SQL语句 ScarpDAO通过ID(getScarpById)调用此配置  -->
+	<select id="getScarpById" parameterType="String" resultMap="scarpMap">
+		select a.* , b.equipname  from scarp a , equip b  where 1=1 and a.equipid = b.equipid and scarpid=#{scarpid} order by scarpid desc
+	</select>
+
+	<!-- 设备报废表 按条件精确查询SQL语句 ScarpDAO通过ID(getScarpByCond)调用此配置  -->
+	<select id="getScarpByCond" parameterType="scarp" resultMap="scarpMap">
+		select a.* , b.equipname  from scarp a , equip b  where 1=1 and a.equipid = b.equipid 
+		<if test="sno != null and '' != sno">
+			and a.sno = #{sno}  
+		</if>
+		<if test="equipid != null and '' != equipid">
+			and a.equipid = #{equipid}  
+		</if>
+		<if test="reason != null and '' != reason">
+			and a.reason = #{reason}  
+		</if>
+		<if test="addtime != null and '' != addtime">
+			and a.addtime = #{addtime}  
+		</if>
+		<if test="manager != null and '' != manager">
+			and a.manager = #{manager}  
+		</if>
+		<if test="memo != null and '' != memo">
+			and a.memo = #{memo}  
+		</if>
+	</select>
+
+	<!-- 设备报废表 按条件模糊查询SQL语句 ScarpDAO通过ID(getScarpByLike)调用此配置  -->
+	<select id="getScarpByLike" parameterType="scarp" resultMap="scarpMap">
+		select a.* , b.equipname  from scarp a , equip b  where 1=1 and a.equipid = b.equipid 
+		<if test="sno != null and '' != sno">
+			and a.sno like CONCAT('%', CONCAT(#{sno}, '%'))
+		</if>
+		<if test="equipid != null and '' != equipid">
+			and b.equipname like CONCAT('%', CONCAT(#{equipid}, '%'))
+		</if>
+		<if test="reason != null and '' != reason">
+			and a.reason like CONCAT('%', CONCAT(#{reason}, '%'))
+		</if>
+		<if test="addtime != null and '' != addtime">
+			and a.addtime like CONCAT('%', CONCAT(#{addtime}, '%'))
+		</if>
+		<if test="manager != null and '' != manager">
+			and a.manager like CONCAT('%', CONCAT(#{manager}, '%'))
+		</if>
+		<if test="memo != null and '' != memo">
+			and a.memo like CONCAT('%', CONCAT(#{memo}, '%'))
+		</if>
+	</select>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

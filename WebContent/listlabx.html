@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="zh">
+
+<head>
+   <meta charset="UTF-8">
+    <title>实验室信息列表</title>
+    <link rel="stylesheet" href="./asset/css/components.css" />
+    <link rel="stylesheet" href="./asset/css/bootstrap.css" />
+    <link rel="stylesheet" href="./asset/css/plugins.css" />
+    <link rel="stylesheet" href="./asset/css/main.css" />
+    <link rel="stylesheet" href="./asset/css/themes.css" />
+    <link rel="stylesheet" href="./asset/layui/css/layui.css" />
+</head>
+
+<body>
+    <div id="body">
+        <div id="app">
+            <ol class="breadcrumb">
+                <li class="active"><a href="javascript:;">管理系统</a></li>
+                <li>实验室信息列表</li>
+            </ol>
+            <div class="barboxs">
+                <button class="btn btn-info pull-left ml10" title="添加实验室"
+                    onclick="openForm('添加实验室','addlabx.html')"><i class="fa fa-pencil-square-o"></i>
+                    添加实验室</button>
+                <button class="btn btn-danger pull-left ml10" title="批量删除" @click="datadel()"><i
+                        class="fa fa-trash-o"></i> 批量删除</button>
+                <button class="btn btn-success pull-right ml10" title="刷新数据" onclick="location.reload()"><i
+                        class="fa fa-refresh"></i></button>
+            </div>
+            <div class="tablebox">
+                <table class="table table-bordered table-hover table-striped">
+                  <thead>
+                    <tr>
+                      <th style="text-align: center" width="5">&nbsp;</th>
+                      <th style="text-align: center">实验室名称</th>
+                      <th style="text-align: center">负责人</th>
+                      <th style="text-align: center">联系方式</th>
+                      <th style="text-align: center">实验室地址</th>
+                      <th style="text-align: center">创建日期</th>
+                      <th style="text-align: center">备注</th>
+                      <th style="text-align: center"><i class="fa fa-bolt"></i> 操作</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  	<tr v-for="item in labx" :key="item.labxid">
+                  		<td style="text-align: center"><input type="checkbox" :value="item.labxid" v-model="ids"></td>
+                  		<td style="text-align: center">{{ item.labxname }}</td>
+                  		<td style="text-align: center">{{ item.manager }}</td>
+                  		<td style="text-align: center">{{ item.contact }}</td>
+                  		<td style="text-align: center">{{ item.address }}</td>
+                  		<td style="text-align: center">{{ item.addtime }}</td>
+                  		<td style="text-align: center">{{ item.memo }}</td>
+                  		<td style="text-align: center">&nbsp;&nbsp;<a href="javascript:;" title="编辑" @click="getLabxById(item.labxid)"><i
+                      		class="fa fa-pencil"></i></a>&nbsp;&nbsp;<a href="javascript:;"
+                      		@click="deleteLabx(item.labxid)" title="删除"><i class="fa fa-trash-o"></i></a></td>
+                    	</tr>
+                  </tbody>
+                </table>
+            </div>
+            <!-- 存放分页的容器 -->
+            <div id="layui" style="text-align: right"></div>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="./asset/js/jquery.min.js"></script>
+    <script type="text/javascript" src="./asset/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="./asset/layui/layui.js"></script>
+    <script type="text/javascript" src="./asset/js/tool.js"></script>
+    <script type="text/javascript" src="./asset/js/axios.min.js"></script>
+    <script type="text/javascript" src="./asset/js/vue.js"></script>
+	<script type="text/javascript">
+		const vue = new Vue({ // 实例化Vue对象
+			el: '#app',// 绑定作用域
+			data: { //定义数据 用于vue的双向绑定
+				labx: [],
+				ids: [],// 定义批量删除的数组
+				page: {},
+				count: 0,
+				page: 1,
+				limit: 10,
+			},
+			created() { // 生命周期相关的函数
+				this.loadTable(); // 调用查询实验室信息的方法
+			},
+			methods: {
+				loadTable: function () { // 查询实验室信息的函数
+					let _this = this;
+					axios.get('http://127.0.0.1:8080/equipment/labx/getLabxByPage.action?page=' + _this.page + '&limit=' + _this.limit).then(result => {
+						_this.labx = result.data.data;
+						_this.count = result.data.count;
+						if (_this.page == 1) {
+							_this.loadPage();
+						}
+					});
+				},
+				loadPage: function () { // 调用LayUI分页标签的使用
+					layui.use(['laypage'], function () {
+						const laypage = layui.laypage;
+						laypage.render({
+							elem: 'layui', // 定义标签显示
+							count: vue.count, //数据量
+							limit: vue.limit,//每页限制
+							jump: function (obj, first) {
+								if (!first) {
+									vue.page = obj.curr;
+									vue.loadTable();
+								}
+							}
+						});
+					})
+				},
+				deleteLabx: function (labxid) { // 根据主键删除实验室信息
+					let _this = this;
+					if (window.confirm('确定要删除这条记录吗？')) {
+						axios.get('http://127.0.0.1:8080/equipment/labx/deleteLabx.action?id=' + labxid).then(result => {
+							if (result.data.code > 0) {
+								_this.loadTable();
+							} else {
+								alert('系统错误，请稍后再试');
+							}
+						});
+					}
+				},
+				datadel: function () { // 批量删除实验室信息
+					let _this = this;
+					if (window.confirm('确定要批量删除记录吗？')) {
+						axios.post('http://127.0.0.1:8080/equipment/labx/deleteLabxByIds.action', _this.ids).then(result => {
+							if (result.data.code > 0) {
+								_this.loadTable();
+							} else {
+								alert('系统错误，请稍后再试');
+							}
+						});
+					}
+				},
+				getLabxById: function (labxid) { // 编辑按钮点击事件
+					let url = 'editlabx.html?id=' + labxid;
+					layer_show('编辑实验室', url, 1000, 500);
+				},
+			},
+		});
+	</script>
+
+</body>
+
+</html>
+
+
